@@ -1,16 +1,17 @@
 #include<cstdio>
 #include<string.h>
 #define MAX_D_NUM 1010
-#define MAX_D_SIZE 100000
+#define MAX_D_SIZE 102500
 #define IS_NUM(c) ((c) >= '0' && (c) <= '9')
 
 char Array[MAX_D_NUM][MAX_D_SIZE];
+bool Valid[MAX_D_NUM]; 
 int Req[MAX_D_NUM];
 int n, s, l, m;
 
 char recover_half_byte(int bias) {
 	char result = 0;
-	for (int i = 0; i < l; i++) {
+	for (int i = 0; i < n && Valid[i]; i++) {
 		char hb = Array[i][bias];
 		if(IS_NUM(hb)) 
 			result ^= (hb - '0');
@@ -25,52 +26,47 @@ char recover_half_byte(int bias) {
 
 void access_block(int vb) {
 	// 1. check vb
-	// (1) forget to divide 8
-	// (2) forget to return
-	// (3) corner case
 	if (vb >= (n - 1) * (strlen(Array[0]) / 8)) {
 		printf("-\n");
 		return;
 	}
 	// 2. phy disk and phy block 
-	int layer_belt_size = s * (n - 1);
-	int layer = vb / layer_belt_size;
-	int P = n - 1 - layer % n;
-	int bias = vb % layer_belt_size;
-	int pd = (P + 1 + bias / s) % n;
-	int pb = s * layer + bias % s;
+	int pd = (vb / s) % n;
+	int pb = s * (vb / (s * (n - 1))) + vb % s;
 	// 3. print
-	if (pd >= l) { //lost
-		if (l < n - 1) { // cannot revocer
-			printf("-\n");
-			return;
-		}
-		for (int i = 0; i < 8; i++)
-			putchar(recover_half_byte(pb * 8 + i));
-	} else { //directly read
+	if (Valid[pd]) { //valid or recovered
 		for (int i = 0; i < 8; i++)
 			putchar(Array[pd][pb * 8 + i]);
+	} else { //invalid
+		putchar('-');
 	}
 	putchar('\n');
 }
 
 int main() {
-	//input
-	// (1) write "%m" stupidly
+	// 1.input
 	scanf("%d%d%d", &n, &s, &l);
-	for(int i = 0; i < l; i++) {
-		int pd = 0;
+	for (int i = 0; i < l; i++) {
+		int pd;
 		scanf("%d", &pd);
-		char *Disk = Array[pd];
-		scanf("%s", Disk);
+		scanf("%s", Array[pd]);
+		Valid[pd] = true;
 	}
 	scanf("%d", &m);
-	for(int i = 0; i < m; i++) {
+	for (int i = 0; i < m; i++) {
 		scanf("%d", Req + i);
 	}
-	//output 
-	for(int i = 0; i < m; i++) {
-		//read phy block and print
+	//2.recover
+	if (n - 1 == l) {
+		int rcv = 0;
+		for (; Valid[rcv] && rcv < n; rcv++) ;
+		for (int i = 0; i < strlen(Array[0]); i++) {
+			 Array[rcv][i] = recover_half_byte(i);
+		}
+		Valid[rcv] = true;
+	}
+	//3.output 
+	for (int i = 0; i < m; i++) {
 		access_block(Req[i]);
 	}
 	return 0;
