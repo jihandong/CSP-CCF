@@ -1,73 +1,59 @@
-#include<cstdio>
-#include<string.h>
-#define MAX_D_NUM 1010
-#define MAX_D_SIZE 102500
-#define IS_NUM(c) ((c) >= '0' && (c) <= '9')
+/* 磁盘恢复
+ * 要点：
+ * （1）输入：使用fgetc来处理长字符串输入比scanf更快；
+ * 		注意之前需要使用%*c吸掉换行符；
+ * （2）常数级优化：是毫无意义的，不要再上面浪费时间（除了输入输出）；
+ * （3）条件判断：程序主体计算部分占据一半分数，条件判断也可以占据一半分数，
+ * 		但是条件判断比计算容易地多，一定要注意条件判断的corner case，
+ * 		避免愚蠢的失分；
+ * （4）格式转化：sscanf可以对变量进行格式转换，非常方便，应该合理利用。
+ */
+#include<bits/stdc++.h>
+using namespace std;
 
-char Array[MAX_D_NUM][MAX_D_SIZE];
-bool Valid[MAX_D_NUM]; 
-int Req[MAX_D_NUM];
+char Array[1010][102500];
+char Temp[9]; 
+int Req[1010];
 int n, s, l, m;
-
-char recover_half_byte(int bias) {
-	char result = 0;
-	for (int i = 0; i < n && Valid[i]; i++) {
-		char hb = Array[i][bias];
-		if(IS_NUM(hb)) 
-			result ^= (hb - '0');
-		else
-			result ^= (hb - 'A' + 10);
-	}
-	if (result < 10)
-		return result + '0';
-	else
-		return result + 'A' - 10;
-}
-
-void access_block(int vb) {
-	// 1. check vb
-	if (vb >= (n - 1) * (strlen(Array[0]) / 8)) {
-		printf("-\n");
-		return;
-	}
-	// 2. phy disk and phy block 
-	int pd = (vb / s) % n;
-	int pb = s * (vb / (s * (n - 1))) + vb % s;
-	// 3. print
-	if (Valid[pd]) { //valid or recovered
-		for (int i = 0; i < 8; i++)
-			putchar(Array[pd][pb * 8 + i]);
-	} else { //invalid
-		putchar('-');
-	}
-	putchar('\n');
-}
 
 int main() {
 	// 1.input
 	scanf("%d%d%d", &n, &s, &l);
 	for (int i = 0; i < l; i++) {
 		int pd;
-		scanf("%d", &pd);
-		scanf("%s", Array[pd]);
-		Valid[pd] = true;
+		scanf("%d%*c",&pd);
+		fgets(Array[pd], 102500, stdin);
 	}
 	scanf("%d", &m);
 	for (int i = 0; i < m; i++) {
 		scanf("%d", Req + i);
 	}
-	//2.recover
-	if (n - 1 == l) {
-		int rcv = 0;
-		for (; Valid[rcv] && rcv < n; rcv++) ;
-		for (int i = 0; i < strlen(Array[0]); i++) {
-			 Array[rcv][i] = recover_half_byte(i);
-		}
-		Valid[rcv] = true;
-	}
-	//3.output 
+	//2.output
+	int nblocks = (n - 1) * strlen(Array[0]) / 8;
+	int nblocks_layer_belt = s * (n - 1);
 	for (int i = 0; i < m; i++) {
-		access_block(Req[i]);
+		int vb = Req[i];
+		// 2.1. check vbphy disk and phy block
+		int pd = (vb / s) % n;
+		int pb = s * (vb / nblocks_layer_belt) + vb % s;
+		// 2.2. check vb and print
+		if (vb >= nblocks ||(Array[pd][0] == '\0' && n - 1 > l)) {
+			printf("-\n");
+		} else if (Array[pd][0] != '\0') { //valid
+			for (int k = 0; k < 8; k++)
+				putchar(Array[pd][pb * 8 + k]);
+			putchar('\n');
+		} else { //invalid but recoverable
+			int ans = 0, tmp;
+			for (int j = 0; j < n && j != pd; j++) {
+				for (int k = 0; k < 8; k++)
+					Temp[k] = Array[j][pb * 8 + k];
+				Temp[8] = '\0';
+				sscanf(Temp, "%X", &tmp);
+				ans ^= tmp;
+			}
+			printf("%08X\n", ans);
+		}
 	}
 	return 0;
-} 
+}
