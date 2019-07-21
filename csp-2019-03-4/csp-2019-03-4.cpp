@@ -1,9 +1,16 @@
+/* 并行死锁检查
+ * 要点
+ * （1）上限检查：m、s、n等全局变量一定要明确上限，检查成本低，错误成本高；
+ * 		本题将n的上限设置为1010而非10010而失去了20分；
+ * （2）输入字符串处理：使用string类型及其方法非常方便；
+ * （3）去除debug-printf：最后提交一定要记得删除用于debug的printf，否则0分
+ */
 #include<bits/stdc++.h>
 using namespace std;
 
 typedef pair<char, int> command;
 int T, n;
-queue<command> C[1010]; //great idea! implement tomorrow 
+queue<command> C[10010]; //great idea! implement tomorrow 
 
 void clear(queue<command>& q) {
 	queue<command> empty;
