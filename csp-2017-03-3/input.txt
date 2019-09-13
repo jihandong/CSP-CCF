@@ -1,0 +1,16 @@
+# Heading
+
+## Sub-heading
+
+Paragraphs are separated
+by a blank line.
+
+Tex attributes _italic_.
+
+Bullet list:
+
+* apples
+* oranges
+* pears
+
+A [_Link_](http://example.com).

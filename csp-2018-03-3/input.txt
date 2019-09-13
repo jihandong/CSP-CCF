@@ -8,7 +8,3 @@
 /articles/1985/09/aloha/
 /articles/hello/
 /static/js/jquery.js
-
-13
-14 15 16 17 18
-19
