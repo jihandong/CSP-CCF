@@ -1,3 +1,6 @@
+/*
+ * 1.dijkstra超时：没有使用优先队列导致失去20分，尽可能使用优先队列
+ */
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -6,7 +9,10 @@ const int INF = 0x3FFFFFFF;
 int n, m;
 struct node {
 	int v, dis;
-	node (int _v, int _dis) {v = _v; dis = _dis;};
+	node(int _v, int _dis) {v = _v; dis = _dis;};
+	friend bool operator < (node n1, node n2) {
+		return n1.dis < n2.dis;
+	} 
 };
 vector<node> Adj[MAXN];
 int d[MAXN];
