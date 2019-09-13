@@ -1,3 +1,6 @@
+/*
+ * 1.kruskal算法的应用，几乎没有难度，只是一个理解的问题
+ */
 #include<bits/stdc++.h>
 using namespace std;
 
