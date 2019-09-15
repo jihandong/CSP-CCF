@@ -5,10 +5,11 @@
 using namespace std;
 
 const int MAXN = 301;
+const int MAXP = 100;
 int n;
 int now[MAXN];
 int pre[MAXN];
-bool flag = false;
+bool mem[MAXN][MAXP][MAXP];
 
 void input() {
 	scanf("%d", &n);
@@ -20,13 +21,18 @@ void output() {
 		if(i != 1) printf(" ");
 		printf("%d", pre[i]);
 	} printf("\n");
+	exit(0);
 }
 
 void dfs(int index, int price) {
-	//branch
+	//branch cut
+	if (index > 1) {
+		if (mem[index][price][pre[index-1]]) return;
+	}
+	mem[index][price][pre[index-1]] = true;
+	//branch out
 	int p;
-	if (flag) return;
-	else pre[index] = price;
+	pre[index] = price;
 	/* 
 	if (index == 1) printf("index1 is %d\n", price);
 	if (index == 2) printf(" index2 is %d\n", price);
@@ -39,23 +45,22 @@ void dfs(int index, int price) {
 	*/ 
 	if (index == 0) {
 		for (int i = 1; i < 2*now[1]+1; i++) 
-			if (!flag) dfs(1, i);
+			dfs(1, i);
 	} else if (index == 1) {
-		if (!flag && (p = 2*now[1] - pre[1]) > 0) dfs(2, p);
-		if (!flag && (p = 2*now[1] - pre[1] + 1) > 0) dfs(2, p);
+		if ((p = 2*now[1] - pre[1]) > 0) dfs(2, p);
+		if ((p = 2*now[1] - pre[1] + 1) > 0) dfs(2, p);
 	} else if (index < n) {
-		if (!flag && (p = 3*now[index] - pre[index] - pre[index-1]) > 0) dfs(index + 1, p);
-		if (!flag && (p = 3*now[index] - pre[index] - pre[index-1] + 1) > 0) dfs(index + 1, p);
-		if (!flag && (p = 3*now[index] - pre[index] - pre[index-1] + 2) > 0) dfs(index + 1, p);
+		if ((p = 3*now[index] - pre[index] - pre[index-1]) > 0) dfs(index + 1, p);
+		if ((p = 3*now[index] - pre[index] - pre[index-1] + 1) > 0) dfs(index + 1, p);
+		if ((p = 3*now[index] - pre[index] - pre[index-1] + 2) > 0) dfs(index + 1, p);
 	} else {
-		if (!flag && pre[n-1] + pre[n] == 2*now[n]) flag = true;
-		if (!flag && pre[n-1] + pre[n] == 2*now[n] + 1) flag = true;
+		if (pre[n-1] + pre[n] == 2*now[n]) output();
+		if (pre[n-1] + pre[n] == 2*now[n] + 1) output();
 	}
 }
 
 int main() {
 	input();
 	dfs(0, 0);
-	output();
 	return 0;
 } 
