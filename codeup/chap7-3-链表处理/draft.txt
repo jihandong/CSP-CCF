@@ -1,0 +1,20 @@
+3 2 1
+先后push 3 2 1形成1 2 3
+m行
+	get a		删除第a个元素
+	insert a e		在第a个位置前面插入e
+	delete
+	show
+1 2 3 4 5 6 7 8
+——————
+1 2 3
+2 3
+2
+Link list is empty
+5
+7 5
+
+
+静态数组
+node
+next
