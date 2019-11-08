@@ -185,6 +185,42 @@
 
 8.1 深度优先搜索（DFS）
 
+    A 【递归入门】全排列：生成全排列.
+        忍不住用了do{ ... } while(next_permutation(A, A+n));
+    B 【递归入门】组合的输出：生成组合。
+        没有方便的函数了，就自己写一个BF递归。参数使用了vector，可能递归负担会很大，虽然最后跑通了，但是使用一个公共数组更安全（指超时）
+        ！学会了vector的快速拷贝vector<int> v2(v1)，复制v1的内容到v2。
+    C 【递归入门】组合+判断素数：
+        ！！！判断素数使用那个6步长的算法很容易写错
+        public static boolean isPrime(int num) {
+            if (num <= 3) {
+                return num > 1;
+            }
+            // 不在6的倍数两侧的一定不是质数
+            if (num % 6 != 1 && num % 6 != 5) {
+                return false;
+            }
+            int sqrt = (int) Math.sqrt(num);
+            for (int i = 5; i <= sqrt; i += 6) {    //注意这里的条件绝对不能有一点改动
+                if (num % i == 0 || num % (i + 2) == 0) {
+                    return false;
+                }
+            }
+            return true;
+        }   
+    D 【递归入门】n皇后 问题（原始的8皇后问题）：
+        用next_permutation需要判断C(8,2)=28次，复杂度太高了，还是只能递归剪枝求解。
+    E 【递归入门】出栈序列统计：计算入栈出栈的组合方式
+        比较简单，直接递归即可。 
+    F 【递归入门】走迷宫：四个方向都试探一波。
+        ！！！记得处理corner case，还是先把该有的注释都写上比较保险：
+            //var
+            //input
+            //corner
+            //initial
+            //output
+        ！！！清空二维数组，久了又忘记了fill(V[0], V[0]+MAXN*MAXM, 0);
+
 8.2 广度优先搜索（BFS）
 
 ## 9 数据结构专题2：树，并查集，堆

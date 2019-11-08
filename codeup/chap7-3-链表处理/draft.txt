@@ -18,3 +18,59 @@ Link list is empty
 静态数组
 node
 next
+
+1 2 3
+delete OK
+2 3
+delete OK
+2
+delete OK
+Link list is empty
+delete fail
+insert fail
+Link list is empty
+insert OK
+5
+insert OK
+7 5
+insert OK
+7 5 5
+insert OK
+7 5 6 5
+insert OK
+8 7 5 6 5
+7
+
+	head	
+2	p1,p2
+1	p1	p2
+
+	head
+1	p1,p2
+0	p1	p2
+	
+	head	1	2	3
+2	
+数字选择，大者优先
+1	2	3	4	5
+1	1	1
+1	1		1
+1	1			1
+1		1	1
+1		1		1
+1			1	1
+	1	1	1
+	1	1		1
+	1		1	1
+		1	1	1
+
+反过来看
+1具有最小的权重<< i再排序就可以得到
+使用递归，传递使用的数字个数
+f(遍历到的index,选择的数字个数n) = {
+	如果个数==最大个数
+		打印\n
+	否则分支
+		打印数字index	f(index+1,n+1)
+		不打印数字	f(index+1,n)
+}
