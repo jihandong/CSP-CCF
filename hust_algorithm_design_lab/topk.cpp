@@ -62,7 +62,7 @@ int select(vector<int> &A, int k) {
 }
 
 void test(int V, int K) {
-	clock_t start1, end1, start2, end2;
+	clock_t start, end, start2, end2;
 	srand((int)time(0)); //随机数种子 
 	vector<int> A1, A2;
 	for(int i = 0; i < V; ++i) {
@@ -73,12 +73,13 @@ void test(int V, int K) {
     sort(A2.begin(), A2.end());
     start = clock();	//程序开始计时
     int res;
-    for(int i = 0; i < 100; i++) {	//为了时间区别更明显，重复100次 
+    //for(int i = 0; i < 100; i++) {	//为了时间区别更明显，重复100次 
+    for(int i = 0; i < V; i++) printf("%d ", A1[i]); 
     	res = select(A1, K);
-    }
+    //}
     end = clock();		//程序结束计时
-    double endtime=(double)(end-start)/CLOCKS_PER_SEC;
-	printf("%dth: res = %d, ans = %d, time = %lf\n", K, res, A2[K-1], endtime);
+    double endtime=(double)(end-start)/CLOCKS_PER_SEC; 
+	printf("\n%dth: res = %d, ans = %d, time = %lf\n", K, res, A2[K-1], endtime);
 	return;
 }
 
